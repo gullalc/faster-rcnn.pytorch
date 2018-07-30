@@ -5,14 +5,14 @@ from torch.utils.ffi import create_extension
 
 #this_file = os.path.dirname(__file__)
 
-sources = ['src/roi_crop.c']
+sources = ['src/roi_crop.cpp']
 headers = ['src/roi_crop.h']
 defines = []
 with_cuda = False
 
 if torch.cuda.is_available():
     print('Including CUDA code.')
-    sources += ['src/roi_crop_cuda.c']
+    sources += ['src/roi_crop_cuda.cpp']
     headers += ['src/roi_crop_cuda.h']
     defines += [('WITH_CUDA', None)]
     with_cuda = True
@@ -29,7 +29,8 @@ ffi = create_extension(
     define_macros=defines,
     relative_to=__file__,
     with_cuda=with_cuda,
-    extra_objects=extra_objects
+    extra_objects=extra_objects,
+    libraries=["ATen","_C",'cudart']
 )
 
 if __name__ == '__main__':
